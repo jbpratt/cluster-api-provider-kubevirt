@@ -16,11 +16,11 @@ jobs:
       - name: build image
         shell: bash
         env:
-          QUAY_TOKEN: ${{secrets.QUAY_TOKEN}}
-          REGISTRY: "quay.io/capk"
+          QUAY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REGISTRY: ghcr.io/jbpratt/capk
           TAG: ${{ github.ref_name }}
         run: |
-          echo $QUAY_TOKEN | docker login -u="capk+capk_robot" quay.io --password-stdin
+          echo $QUAY_TOKEN | docker login -u=${{ github.actor }} ghcr.io --password-stdin
           make docker-build-all
           make docker-push-all
   build:
@@ -38,7 +38,7 @@ jobs:
         run: curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
       - name: Create infrastructure components
         env:
-          REGISTRY: "quay.io/capk"
+          REGISTRY: ghcr.io/jbpratt/capk
           IMAGE_NAME: "capk-manager"
           TAG: ${{ github.ref_name }}
         run: |
